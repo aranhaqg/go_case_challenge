@@ -4,8 +4,10 @@ class OrdersController < ApplicationController
 	def index
 		@orders = Order.all
 		@orders = Order.find_by_client_name(params[:client_name]) if params[:client_name].present?
-		
-		raise ActiveRecord::RecordNotFound.new(message: "Couldn't find Order") if @orders.nil?
+		@orders = @orders.limit(params[:limit]) if params[:limit].present?
+		@orders = @orders.offset(params[:offset]) if params[:offset].present?
+
+		raise ActiveRecord::RecordNotFound.new(message: "Couldn't find Order") if @orders.blank?
 
 		json_response(@orders)
 	end

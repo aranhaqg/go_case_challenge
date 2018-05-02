@@ -10,6 +10,8 @@ RSpec.describe 'Orders API' do
 	let(:batch_id) { batch.id }
 	let(:order_id) { orders.first.id }
 	let(:order_client_name) { orders.first.client_name }
+	let(:order_limit) { 4 }
+	let(:order_offset) { 2 }
 
 	# Test suite for GET /orders/:id
 	describe 'GET /orders/:id' do
@@ -92,8 +94,36 @@ RSpec.describe 'Orders API' do
 	  	end
 	end
 
-	# Test suite for POST /todos/:todo_id/items
-  	describe 'POST /items' do
+	# Test suite for GET /orders/ by client_name
+	describe 'GET /orders/ by an offset and limit' do
+	  	before { get "/orders/", params: {offset: order_offset, limit: order_limit } }
+
+	  	context 'when the record exists and is in range' do
+	    	it 'returns the orders' do
+	      	expect(json).not_to be_empty
+	      	expect(json.size).to eq(3)
+	    	end
+
+	    	it 'returns status code 200' do
+	      	expect(response).to have_http_status(200)
+	    	end
+	  	end
+
+		context 'when the record exists and is not in range' do
+	    	let(:order_offset) { 6 }
+	    	let(:order_limit) { 0 }
+	    	it 'returns status code 404' do
+	      	expect(response).to have_http_status(404)
+	    	end
+
+	    	it 'returns a not found message' do
+	      	expect(response.body).to match(/Couldn't find Order/)
+	    	end
+	  	end
+	end
+
+	# Test suite for POST /orders
+  	describe 'POST /orders' do
     	let(:valid_attributes) { 
     		{ 
 	    		reference: 'BR102030',
@@ -139,4 +169,21 @@ RSpec.describe 'Orders API' do
 		end
   	end
 
+  	# Test suite for PUT /orders/:id
+  	describe 'PUT /orders/:id' do
+    	let(:valid_attributes) { { client_name: 'Renan' } }
+    	context 'when the record exists' do
+      	before { put "/orders/#{order_id}", params: valid_attributes }
+
+      	it 'updates the record' do
+      		updated_order = Order.find(order_id)
+        		expect(updated_order.client_name).to match(/Renan/)
+        		expect(response.body).to be_empty
+      	end
+
+      	it 'returns status code 204' do
+        		expect(response).to have_http_status(204)
+      	end
+    	end
+  	end
 end

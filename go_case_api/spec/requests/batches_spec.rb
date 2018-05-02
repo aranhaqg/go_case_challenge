@@ -125,13 +125,15 @@ RSpec.describe 'batches API', type: :request do
     end
   end
 
-  # Test suite for PUT /todos/:id
+  # Test suite for PUT /batches/:id
   describe 'PUT /batches/:id' do
     let(:valid_attributes) { { reference: '201803-54' } }
     context 'when the record exists' do
       before { put "/batches/#{batch_id}", params: valid_attributes }
 
       it 'updates the record' do
+        updated_batch = Batch.find(batch_id)
+        expect(updated_batch.reference).to match(/201803-54/)
         expect(response.body).to be_empty
       end
 

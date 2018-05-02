@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  resources :batches, only: [:index, :show, :create, :update]
-  resources :orders
+  	resources :batches, only: [:index, :show, :create, :update] 
+	get '/batches/:id/orders', to: 'batches#orders'
+  	resources :orders, only: [:index, :show, :create, :update]
 end

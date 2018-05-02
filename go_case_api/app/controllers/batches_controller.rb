@@ -1,5 +1,5 @@
 class BatchesController < ApplicationController
-	before_action :set_batch, only: [:show, :update]
+	before_action :set_batch, only: [:show, :update, :orders]
 
 	# GET /batches
 	def index
@@ -28,16 +28,15 @@ class BatchesController < ApplicationController
 		head :no_content
 	end
 
-	# DELETE /batches/:id
-	def destroy
-		@batch.destroy
-		head :no_content
+	# GET /batches/:id/orders
+	def orders
+		json_response(@batch.orders)	
 	end
 
 	private
 
 	def batch_params
-		params.permit(:reference, :purchase_channel)
+		params.permit(:reference, :purchase_channel, :orders)
 	end
 
 	def set_batch

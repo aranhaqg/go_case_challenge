@@ -10,7 +10,7 @@ RSpec.describe 'batches API', type: :request do
   # Test suite for GET /batches
   describe 'GET /batches' do
     # make HTTP get request before each example
-    before { get '/batches' }
+    before { get '/batches'}
 
     it 'returns batches' do
       # Note `json` is a custom helper to parse JSON responses

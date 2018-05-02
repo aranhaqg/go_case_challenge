@@ -30,7 +30,7 @@ class OrdersController < ApplicationController
 	private
 
 	def order_params
-		params.permit(:reference, :purchase_channel, :client_name, :address, :delivery_service, :line_items, :total_value, :status, :batch)
+		params.permit(:reference, :purchase_channel, :client_name, :address, :delivery_service, :line_items, :total_value, :status, :batch_id, :batch)
 	end
 
 	def set_order

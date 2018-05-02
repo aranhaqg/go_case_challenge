@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'batches API', type: :request do
   # initialize test data
+  before(:each) do 
+    Faker::UniqueGenerator.clear
+  end 
   let!(:batches) { create_list(:batch_with_orders, 10 ) }
   let(:batch_id) { batches.first.id }
   let(:batch_reference) { batches.first.reference}
@@ -84,7 +87,13 @@ RSpec.describe 'batches API', type: :request do
     let(:order_1) { FactoryBot.create(:order, {purchase_channel: batch_purchase_channel, batch_id: batch_id}) }
     let(:order_2) { FactoryBot.create(:order, {purchase_channel: batch_purchase_channel, batch_id: batch_id}) }
     let(:order_3) { FactoryBot.create(:order, {purchase_channel: 'Other Channel', batch_id: batch_id}) }
-    let(:valid_attributes) { {reference: '201803-54', purchase_channel: batch_purchase_channel, orders:  [order_1,order_2] }}
+    let(:valid_attributes) { 
+      {
+        reference: '201803-54', 
+        purchase_channel: batch_purchase_channel, 
+        orders:  [order_1,order_2] 
+      }
+    }
 
     context 'when the request is valid' do
       before { post '/batches', params: valid_attributes }
@@ -98,16 +107,20 @@ RSpec.describe 'batches API', type: :request do
       end
     end
 
-    context 'when the request is invalid' do
-      before { post '/batches', params: { purchase_channel: 'Other Channel' ,orders: [order_1,order_2,order_3] } }
-
-      it 'returns status code 422' do
-        expect(response).to have_http_status(422)
-      end
-
-      it 'returns a validation failure message' do
-        expect(response.body)
-          .to match(/Validation failed: Reference can't be blank/)
+    context 'when an invalid request' do
+      non_nullable_attributes =  ['reference', 'purchase_channel']
+        
+      non_nullable_attributes.each do |attribute|
+          context 'have an attribute non nullable missing' do
+          before{ post "/batches", params: valid_attributes.except(attribute.intern) }
+          
+          it 'returns a failure message' do
+            expect(response.body).to match("#{attribute.capitalize.gsub("_"," ")} can't be blank")
+          end
+          it 'returns status code 422' do
+              expect(response).to have_http_status(422)
+          end
+        end
       end
     end
   end
@@ -115,7 +128,6 @@ RSpec.describe 'batches API', type: :request do
   # Test suite for PUT /todos/:id
   describe 'PUT /batches/:id' do
     let(:valid_attributes) { { reference: '201803-54' } }
-
     context 'when the record exists' do
       before { put "/batches/#{batch_id}", params: valid_attributes }
 

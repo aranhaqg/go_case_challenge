@@ -4,6 +4,8 @@ class OrdersController < ApplicationController
 	def index
 		@orders = Order.all
 		@orders = Order.find_by_client_name(params[:client_name]) if params[:client_name].present?
+		@orders = Order.find_by_purchase_channel(params[:purchase_channel]) if params[:purchase_channel].present?
+		@orders = Order.find_by_status(params[:status]) if params[:status].present?
 		@orders = @orders.limit(params[:limit]) if params[:limit].present?
 		@orders = @orders.offset(params[:offset]) if params[:offset].present?
 

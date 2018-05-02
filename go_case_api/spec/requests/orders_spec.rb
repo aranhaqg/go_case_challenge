@@ -10,6 +10,8 @@ RSpec.describe 'Orders API' do
 	let(:batch_id) { batch.id }
 	let(:order_id) { orders.first.id }
 	let(:order_client_name) { orders.first.client_name }
+	let(:order_purchase_channel) { orders.first.purchase_channel}
+	let(:order_status) { orders.first.status}
 	let(:order_limit) { 4 }
 	let(:order_offset) { 2 }
 
@@ -94,7 +96,7 @@ RSpec.describe 'Orders API' do
 	  	end
 	end
 
-	# Test suite for GET /orders/ by client_name
+	# Test suite for GET /orders/ by an offset and limit
 	describe 'GET /orders/ by an offset and limit' do
 	  	before { get "/orders/", params: {offset: order_offset, limit: order_limit } }
 
@@ -112,6 +114,35 @@ RSpec.describe 'Orders API' do
 		context 'when the record exists and is not in range' do
 	    	let(:order_offset) { 6 }
 	    	let(:order_limit) { 0 }
+	    	it 'returns status code 404' do
+	      	expect(response).to have_http_status(404)
+	    	end
+
+	    	it 'returns a not found message' do
+	      	expect(response.body).to match(/Couldn't find Order/)
+	    	end
+	  	end
+	end
+
+	# Test suite for GET /orders/ by purchase_channel and status
+	describe 'GET /orders/ by purchase_channel and status' do
+	  	before { get "/orders/", params: {purchase_channel: order_purchase_channel, status: order_status } }
+
+	  	context 'when the record exists' do
+	    	it 'returns the orders' do
+	      	expect(json).not_to be_empty
+	      	expect(json['purchase_channel']).to eq(order_purchase_channel)
+	      	expect(json['status']).to eq(order_status)
+	    	end
+
+	    	it 'returns status code 200' do
+	      	expect(response).to have_http_status(200)
+	    	end
+	  	end
+
+		context 'when the record does not exist' do
+	    	let(:order_purchase_channel) { '---' }
+	    	let(:order_status) { '---' }
 	    	it 'returns status code 404' do
 	      	expect(response).to have_http_status(404)
 	    	end

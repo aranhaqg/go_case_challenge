@@ -8,8 +8,7 @@ FactoryBot.define do
 	line_items {  [{sku: 'case-my-best-friend', model: 'iPhone X', case_type: 'Rose Leather'}, {sku: 'powebank-sunshine', capacity: '10000mah'}]}
 	total_value { Faker::Commerce.price}
 	status {'ready'} 
-	batch_id nil
+	batch	
   end
-
 end
 

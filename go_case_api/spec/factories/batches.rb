@@ -1,7 +1,16 @@
 FactoryBot.define do
   factory :batch do
     reference { Faker::Code.unique.asin }
-		purchase_channel { Faker::RickAndMorty.location } 
-		# association :orders #{ FactoryBot.create(:order, {purchase_channel: 'Other Channel', batch_id: batch_id}) }
+	purchase_channel { Faker::RickAndMorty.location } 
+  
+	factory :batch_with_orders do
+		transient do 
+			orders_count 2
+		end
+		after(:create) do |batch, evaluator|
+			create_list(:order, evaluator.orders_count, batch: batch)
+		end
+	end
+
   end
 end

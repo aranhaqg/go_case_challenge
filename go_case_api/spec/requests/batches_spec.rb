@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'batches API', type: :request do
   # initialize test data
-  let!(:batches) { create_list(:batch, 10) }
+  let!(:batches) { create_list(:batch_with_orders, 10 ) }
   let(:batch_id) { batches.first.id }
   let(:batch_reference) { batches.first.reference}
   let(:batch_purchase_channel) { batches.first.purchase_channel}

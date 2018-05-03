@@ -38,6 +38,12 @@ class Batch < ApplicationRecord
 		end
 	end
 
+	def update_status(status)
+		self.orders.each do |order|
+			order.update_attribute(:status, status)
+		end
+	end
+
 	def as_json(options = { })
 	  h = super(options)
 	  h[:reference]   = self.reference

@@ -25,7 +25,10 @@ class BatchesController < ApplicationController
 
 	# PUT /batches/:id
 	def update
+		
 		@batch.update(batch_params)
+		@batch.update_status(params[:status]) if params[:status].present?
+
 		head :no_content
 	end
 
@@ -43,4 +46,5 @@ class BatchesController < ApplicationController
 	def set_batch
 		@batch = Batch.find(params[:id])
 	end
+
 end

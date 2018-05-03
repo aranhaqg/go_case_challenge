@@ -139,7 +139,7 @@ RSpec.describe 'batches API', type: :request do
 
       it 'creates a batch' do
         expect(json['orders_count']).to eq(2)
-        # expect(json['reference']).to eq(Batch.last.reference)
+        expect(json['reference']).to eq(Batch.last.reference)
       end
 
       it 'returns status code 201' do
@@ -168,6 +168,7 @@ RSpec.describe 'batches API', type: :request do
   # Test suite for PUT /batches/:id
   describe 'PUT /batches/:id' do
     let(:valid_attributes) { { purchase_channel: 'Iguatemi store' } }
+    let(:attributes_to_closing_batch) { { status: 'closing' }}
     context 'when the record exists' do
       before { put "/batches/#{batch_id}", params: valid_attributes }
 
@@ -181,6 +182,40 @@ RSpec.describe 'batches API', type: :request do
         expect(response).to have_http_status(204)
       end
     end
+
+    context 'when the batch was produced change orders status to closing' do
+      before { put "/batches/#{batch_id}", params: attributes_to_closing_batch }
+
+      it 'updates the record' do
+        updated_batch = Batch.find(batch_id)
+        updated_batch.orders.each do |order|
+          expect(order.status).to match(/closing/)
+        end
+        expect(response.body).to be_empty
+      end
+
+      it 'returns status code 204' do
+        expect(response).to have_http_status(204)
+      end
+    end
   end
+
+  # Test suite for PUT /batches/:id
+  # describe 'PUT /batches/:id/closing' do
+  #   let(:valid_attributes) { { purchase_channel: 'Iguatemi store' } }
+  #   context 'when the record exists' do
+  #     before { put "/batches/#{batch_id}", params: valid_attributes }
+
+  #     it 'updates the record' do
+  #       updated_batch = Batch.find(batch_id)
+  #       expect(updated_batch.purchase_channel).to match(/Iguatemi store/)
+  #       expect(response.body).to be_empty
+  #     end
+
+  #     it 'returns status code 204' do
+  #       expect(response).to have_http_status(204)
+  #     end
+  #   end
+  # end
 
 end

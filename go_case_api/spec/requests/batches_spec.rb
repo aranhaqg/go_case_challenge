@@ -9,6 +9,7 @@ RSpec.describe 'batches API', type: :request do
   let(:batch_id) { batches.first.id }
   let(:batch_reference) { batches.first.reference}
   let(:batch_purchase_channel) { batches.first.purchase_channel}
+  let(:delivery_service) { batches.first.orders.first.delivery_service }
 
   # Test suite for GET /batches
   describe 'GET /batches' do
@@ -169,6 +170,9 @@ RSpec.describe 'batches API', type: :request do
   describe 'PUT /batches/:id' do
     let(:valid_attributes) { { purchase_channel: 'Iguatemi store' } }
     let(:attributes_to_closing_batch) { { status: 'closing' }}
+    let(:attributes_to_close_part_of_a_batch_for_delivery_service) { 
+      { status: 'sent' , delivery_service: delivery_service }
+    }
     context 'when the record exists' do
       before { put "/batches/#{batch_id}", params: valid_attributes }
 
@@ -198,24 +202,28 @@ RSpec.describe 'batches API', type: :request do
         expect(response).to have_http_status(204)
       end
     end
+
+    context 'when part of the batch was closed by a delivery service change orders status to sent' do
+      before { 
+        put "/batches/#{batch_id}", 
+        params: attributes_to_close_part_of_a_batch_for_delivery_service 
+      }
+
+      it 'updates the record' do
+        updated_batch = Batch.find(batch_id)
+        updated_orders = Array.new
+        updated_orders << updated_batch.orders.find_by_delivery_service(delivery_service)
+        updated_orders.each do |order|
+          expect(Order.find(order.id).status).to match(/sent/)
+        end
+        expect(response.body).to be_empty
+      end
+
+      it 'returns status code 204' do
+        expect(response).to have_http_status(204)
+      end
+    end
   end
 
-  # Test suite for PUT /batches/:id
-  # describe 'PUT /batches/:id/closing' do
-  #   let(:valid_attributes) { { purchase_channel: 'Iguatemi store' } }
-  #   context 'when the record exists' do
-  #     before { put "/batches/#{batch_id}", params: valid_attributes }
-
-  #     it 'updates the record' do
-  #       updated_batch = Batch.find(batch_id)
-  #       expect(updated_batch.purchase_channel).to match(/Iguatemi store/)
-  #       expect(response.body).to be_empty
-  #     end
-
-  #     it 'returns status code 204' do
-  #       expect(response).to have_http_status(204)
-  #     end
-  #   end
-  # end
-
+ 
 end

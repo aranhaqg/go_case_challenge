@@ -38,8 +38,10 @@ class Batch < ApplicationRecord
 		end
 	end
 
-	def update_status(status)
-		self.orders.each do |order|
+	def update_status(status, delivery_service = nil)
+		orders_to_be_updated = Array.new()
+		orders_to_be_updated = self.orders.by_delivery_service(delivery_service)
+		orders_to_be_updated.each do |order|
 			order.update_attribute(:status, status)
 		end
 	end

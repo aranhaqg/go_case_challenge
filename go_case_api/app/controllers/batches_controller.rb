@@ -5,7 +5,6 @@ class BatchesController < ApplicationController
 	def index
 		@batches = Batch.all
 		@batches = Batch.find_by_reference(params[:reference]) if params[:reference].present?
-		
 		raise ActiveRecord::RecordNotFound.new(message: "Couldn't find Batch") if @batches.nil?
 
 		json_response(@batches)
@@ -13,8 +12,10 @@ class BatchesController < ApplicationController
 
 	# POST /batches
 	def create
-		@batch = Batch.create!(batch_params)
-		json_response(@batch, :created)
+		@batch = Batch.new(purchase_channel: params[:purchase_channel] )
+		@batch.orders =  Order.where(id: params[:order_ids]) 
+		@batch.save!
+		json_response({reference: @batch.reference, orders_count: @batch.orders.count}, :created)
 	end
 
 	# GET /batches/:id
@@ -36,7 +37,7 @@ class BatchesController < ApplicationController
 	private
 
 	def batch_params
-		params.permit(:reference, :purchase_channel, :orders)
+		params.permit(:reference, :purchase_channel, :order_ids)
 	end
 
 	def set_batch

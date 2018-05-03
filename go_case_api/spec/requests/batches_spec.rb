@@ -54,9 +54,11 @@ RSpec.describe 'batches API', type: :request do
     end
   end
 
-  # Test suite for GET /batches/ by unique reference
-  describe 'GET /batches/ by unique reference' do
-    before { get "/batches/", params: {reference: batch_reference } }
+  # Test suite for GET /batches/ by reference
+  describe 'GET /batches/ by reference' do
+    before { 
+      get "/batches/", params: {reference: batch_reference } 
+    }
 
     context 'when the record exists' do
       it 'returns the batch' do
@@ -84,22 +86,60 @@ RSpec.describe 'batches API', type: :request do
   # Test suite for POST /batches
   describe 'POST /batches' do
     # valid payload
-    let(:order_1) { FactoryBot.create(:order, {purchase_channel: batch_purchase_channel, batch_id: batch_id}) }
-    let(:order_2) { FactoryBot.create(:order, {purchase_channel: batch_purchase_channel, batch_id: batch_id}) }
-    let(:order_3) { FactoryBot.create(:order, {purchase_channel: 'Other Channel', batch_id: batch_id}) }
+    let(:order_1) { 
+      Order.create!(
+        reference: 'BR20180358' , 
+        purchase_channel: 'Site BR', 
+        client_name: 'Renan', 
+        address: 'Av Alvaro Correia 595', 
+        delivery_service: 'PAC', 
+        line_items: {sku: 'powebank-sunshine', capacity: '10000mah'}, 
+        total_value: 120.00, 
+        status: 'ready'
+      )
+    }
+    let(:order_2) { 
+      # FactoryBot.create(:order, {purchase_channel: batch_purchase_channel})
+      order_2 = Order.create!(
+        reference: 'BR20180359' , 
+        purchase_channel: 'Site BR', 
+        client_name: 'Rogerinho', 
+        address: 'Rua Paula Barros, 45', 
+        delivery_service: 'SEDEX', 
+        line_items: {sku: 'powebank-sunshine', capacity: '10000mah'}, 
+        total_value: 120.00, 
+        status: 'ready'
+      ) 
+    }
+    let(:order_3) { 
+      # FactoryBot.create(:order, {purchase_channel: 'Other Channel'})
+      order_2 = Order.create!(
+        reference: 'BR20180360' , 
+        purchase_channel: 'Other Channel', 
+        client_name: 'Julinho', 
+        address: 'Rua Dom Luis, 2500', 
+        delivery_service: 'SEDEX', 
+        line_items: {sku: 'powebank-sunshine', capacity: '10000mah'}, 
+        total_value: 120.00, 
+        status: 'ready'
+      ) 
+    }
     let(:valid_attributes) { 
       {
-        reference: '201803-54', 
-        purchase_channel: batch_purchase_channel, 
-        orders:  [order_1,order_2] 
+        purchase_channel: 'Site BR', 
+        #orders: [order_1.attributes, order_2.attributes]
+        order_ids: [order_1.id, order_2.id]
       }
     }
 
     context 'when the request is valid' do
-      before { post '/batches', params: valid_attributes }
+      before { 
+        post '/batches', params: valid_attributes 
+      }
 
       it 'creates a batch' do
-        expect(json['reference']).to eq('201803-54')
+        expect(json['orders_count']).to eq(2)
+        # expect(json['reference']).to eq(Batch.last.reference)
       end
 
       it 'returns status code 201' do
@@ -108,7 +148,7 @@ RSpec.describe 'batches API', type: :request do
     end
 
     context 'when an invalid request' do
-      non_nullable_attributes =  ['reference', 'purchase_channel']
+      non_nullable_attributes =  ['purchase_channel']
         
       non_nullable_attributes.each do |attribute|
           context 'have an attribute non nullable missing' do
@@ -127,13 +167,13 @@ RSpec.describe 'batches API', type: :request do
 
   # Test suite for PUT /batches/:id
   describe 'PUT /batches/:id' do
-    let(:valid_attributes) { { reference: '201803-54' } }
+    let(:valid_attributes) { { purchase_channel: 'Iguatemi store' } }
     context 'when the record exists' do
       before { put "/batches/#{batch_id}", params: valid_attributes }
 
       it 'updates the record' do
         updated_batch = Batch.find(batch_id)
-        expect(updated_batch.reference).to match(/201803-54/)
+        expect(updated_batch.purchase_channel).to match(/Iguatemi store/)
         expect(response.body).to be_empty
       end
 

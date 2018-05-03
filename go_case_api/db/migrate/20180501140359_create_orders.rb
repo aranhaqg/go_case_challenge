@@ -9,9 +9,11 @@ class CreateOrders < ActiveRecord::Migration[5.2]
       t.decimal :total_value, precision: 8, scale: 2, null: false
       t.json :line_items
       t.string :status, null: false
-      t.references :batch, foreign_key: true
+      t.integer :batch_id, null: true
 
       t.timestamps
     end
+
+    add_foreign_key :orders, :batches
   end
 end

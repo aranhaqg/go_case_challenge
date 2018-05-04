@@ -11,7 +11,7 @@ FactoryBot.define do
 			{sku: 'powebank-sunshine', capacity: '10000mah'}
 		]
 	}
-	total_value { Faker::Commerce.price}
+	total_value { Faker::Commerce.price.to_s}
 	status {'ready'} 
 	batch	
   end

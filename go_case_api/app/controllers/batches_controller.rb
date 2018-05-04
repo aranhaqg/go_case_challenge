@@ -39,7 +39,7 @@ class BatchesController < ApplicationController
 	private
 
 	def batch_params
-		params.permit(:reference, :purchase_channel, :order_ids)
+		params.permit(:purchase_channel, :order_ids)
 	end
 
 	def set_batch

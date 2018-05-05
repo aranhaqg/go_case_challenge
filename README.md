@@ -1,13 +1,11 @@
 # GoCase API
-
-This Rails app implements a REST API to receive Purchase Orders, group them on Batches and follow the Orders in the production pipeline until the dispatch and generate some simple financial reports. 
+Rails REST API to receive Purchase Orders, group them on Batches, follow the Orders in the production pipeline until the dispatch and generate some simple financial reports.
+Available at https://limitless-dusk-21363.herokuapp.com/.
 
 This app uses:
 
 * Ruby version 2.4.1
-
 * Rails 5.2.0
-
 * PostgreSQL 9.6.8
 
 To run tests it was used RSpec, Factory Bot, Shoulda Matchers, Faker and Database Cleaner gems. For more details check [Gemfile](Gemfile).
@@ -19,16 +17,16 @@ To check the implemented tests see [Order Spec](/spec/models/order_spec.rb), [Ba
 
 The [Order](/app/models/order.rb) entity it's composed of the following properties:
 
-    * reference: String 
-    * purchase_channel: String 
-    * client_name: String 
-    * address: String
-    * delivery_service: String
-    * total_value: Decimal 
-    * line_items: JSON 
-    * status: String
-    * batch_id: Integer (foreign key to reference the Batch entity)
-    * batch: Batch entity
+* reference: String 
+* purchase_channel: String 
+* client_name: String 
+* address: String
+* delivery_service: String
+* total_value: Decimal 
+* line_items: JSON 
+* status: String
+* batch_id: Integer (foreign key to reference the Batch entity)
+* batch: Batch entity
 
 For Line Items the json object was used to make it's declaration flexible.
 

@@ -3,5 +3,4 @@ default: &default
 test:
   <<: *default
   database: go_case_db_test
-  username: travis
   encoding: utf8

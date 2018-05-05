@@ -39,9 +39,9 @@ The reference attribute wasn't formatted in a specific way like in the Batch ent
 
 The [Batch](/app/models/batch.rb) entity it's composed of the following properties:
 
-    * reference: virtual String attribute that is dinamycally mounted based on created_at year, created_at month and id
-    * purchase_channel: String
-    * orders: list of related Orders
+* reference: virtual String attribute that is dinamycally mounted based on created_at year, created_at month and id
+* purchase_channel: String
+* orders: list of related Orders
 
 This entity validates presence of purchase channel and validates if orders' batch purchase channel are the same. In a batch we can mix orders of differents purchase channels.   
 Since in the description of the challenge It was obvious the pattern in the batch reference I decided to auto-generate it based on the creation date and id of the batch. Since I used the id in the reference, it was easy to query by reference.
@@ -123,7 +123,8 @@ These orders can be filteres by purchase channel. If any order is found for the 
 ## Future Improvements
 
 * Use ActiveModel Serializer to handle better serialization/deserialization.
-* Implement authentication and authorization.
+* Implement authentication.
+* Check tests coverage.
 * Improve security with Rack Attack to protect from bad clients. Can be used to prevent brute-force passwords attacks, scrapers and throttling requests from IP addresses for example.
 * Scan code to look for security vulnerabilities with Brakeman. 
 * Use Command Pattern to improve performance at Controllers

@@ -1,5 +1,7 @@
 class Order < ApplicationRecord
   belongs_to :batch, optional: true
+  belongs_to :created_by, class_name: "User", foreign_key: "created_by", optional: true
+
   scope :by_delivery_service, -> (delivery_service) { 
   	where(delivery_service: delivery_service) if delivery_service.present?
   }

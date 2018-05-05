@@ -1,5 +1,6 @@
 class Batch < ApplicationRecord
 	has_many :orders, dependent: :destroy, inverse_of: :batch, autosave: true
+ 	belongs_to :created_by, class_name: "User", foreign_key: "created_by", optional: true
 	
 	attr_accessor :orders_ids
 	

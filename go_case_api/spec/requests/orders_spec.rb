@@ -42,7 +42,7 @@ RSpec.describe 'Orders API' do
 	  end
 	end
 	
-	# Test suite for GET /order by batch
+	# Test suite for GET orders by batch
 	describe 'GET /batches/:batch_id/orders' do
 		before { get "/batches/#{batch_id}/orders" }
 
@@ -204,17 +204,17 @@ RSpec.describe 'Orders API' do
   	describe 'PUT /orders/:id' do
     	let(:valid_attributes) { { client_name: 'Renan' } }
     	context 'when the record exists' do
-      	before { put "/orders/#{order_id}", params: valid_attributes }
+	      	before { put "/orders/#{order_id}", params: valid_attributes }
 
-      	it 'updates the record' do
-      		updated_order = Order.find(order_id)
-        		expect(updated_order.client_name).to match(/Renan/)
-        		expect(response.body).to be_empty
-      	end
+	      	it 'updates the record' do
+	      		updated_order = Order.find(order_id)
+	        		expect(updated_order.client_name).to match(/Renan/)
+	        		expect(response.body).to be_empty
+	      	end
 
-      	it 'returns status code 204' do
-        		expect(response).to have_http_status(204)
-      	end
+	      	it 'returns status code 204' do
+	        		expect(response).to have_http_status(204)
+	      	end
     	end
   	end
 end

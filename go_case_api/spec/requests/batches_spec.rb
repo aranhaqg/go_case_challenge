@@ -128,7 +128,6 @@ RSpec.describe 'batches API', type: :request do
     let(:valid_attributes) { 
       {
         purchase_channel: 'Site BR', 
-        #orders: [order_1.attributes, order_2.attributes]
         order_ids: [order_1.id, order_2.id]
       }
     }

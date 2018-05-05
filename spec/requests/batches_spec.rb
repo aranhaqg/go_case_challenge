@@ -11,10 +11,10 @@ RSpec.describe 'batches API', type: :request do
   let(:batch_purchase_channel) { batches.first.purchase_channel}
   let(:delivery_service) { batches.first.orders.first.delivery_service }
 
-  # Test suite for GET /batches
-  describe 'GET /batches' do
+  # Test suite for GET /api/v1/batches
+  describe 'GET /api/v1/batches' do
     # make HTTP get request before each example
-    before { get '/batches'}
+    before { get '/api/v1/batches'}
 
     it 'returns batches' do
       # Note `json` is a custom helper to parse JSON responses
@@ -27,9 +27,9 @@ RSpec.describe 'batches API', type: :request do
     end
   end
 
-  # Test suite for GET /batches/:id
-  describe 'GET /batches/:id' do
-    before { get "/batches/#{batch_id}" }
+  # Test suite for GET /api/v1/batches/:id
+  describe 'GET /api/v1/batches/:id' do
+    before { get "/api/v1/batches/#{batch_id}" }
 
     context 'when the record exists' do
       it 'returns the batch' do
@@ -55,10 +55,10 @@ RSpec.describe 'batches API', type: :request do
     end
   end
 
-  # Test suite for GET /batches/ by reference
-  describe 'GET /batches/ by reference' do
+  # Test suite for GET /api/v1/batches/ by reference
+  describe 'GET /api/v1/batches/ by reference' do
     before { 
-      get "/batches/", params: {reference: batch_reference } 
+      get "/api/v1/batches/", params: {reference: batch_reference } 
     }
 
     context 'when the record exists' do
@@ -84,8 +84,8 @@ RSpec.describe 'batches API', type: :request do
     end
   end
   
-  # Test suite for POST /batches
-  describe 'POST /batches' do
+  # Test suite for POST /api/v1/batches
+  describe 'POST /api/v1/batches' do
     # valid payload
     let(:order_1) { 
       Order.create!(
@@ -100,7 +100,6 @@ RSpec.describe 'batches API', type: :request do
       )
     }
     let(:order_2) { 
-      # FactoryBot.create(:order, {purchase_channel: batch_purchase_channel})
       order_2 = Order.create!(
         reference: 'BR20180359' , 
         purchase_channel: 'Site BR', 
@@ -113,7 +112,6 @@ RSpec.describe 'batches API', type: :request do
       ) 
     }
     let(:order_3) { 
-      # FactoryBot.create(:order, {purchase_channel: 'Other Channel'})
       order_2 = Order.create!(
         reference: 'BR20180360' , 
         purchase_channel: 'Other Channel', 
@@ -134,7 +132,7 @@ RSpec.describe 'batches API', type: :request do
 
     context 'when the request is valid' do
       before { 
-        post '/batches', params: valid_attributes 
+        post '/api/v1/batches', params: valid_attributes 
       }
 
       it 'creates a batch' do
@@ -152,7 +150,7 @@ RSpec.describe 'batches API', type: :request do
         
       non_nullable_attributes.each do |attribute|
           context 'have an attribute non nullable missing' do
-          before{ post "/batches", params: valid_attributes.except(attribute.intern) }
+          before{ post "/api/v1/batches", params: valid_attributes.except(attribute.intern) }
           
           it 'returns a failure message' do
             expect(response.body).to match("#{attribute.capitalize.gsub("_"," ")} can't be blank")
@@ -165,15 +163,15 @@ RSpec.describe 'batches API', type: :request do
     end
   end
 
-  # Test suite for PUT /batches/:id
-  describe 'PUT /batches/:id' do
+  # Test suite for PUT /api/v1/batches/:id
+  describe 'PUT /api/v1/batches/:id' do
     let(:valid_attributes) { { purchase_channel: 'Iguatemi store' } }
     let(:attributes_to_closing_batch) { { status: 'closing' }}
     let(:attributes_to_close_part_of_a_batch_for_delivery_service) { 
       { status: 'sent' , delivery_service: delivery_service }
     }
     context 'when the record exists' do
-      before { put "/batches/#{batch_id}", params: valid_attributes }
+      before { put "/api/v1/batches/#{batch_id}", params: valid_attributes }
 
       it 'updates the record' do
         updated_batch = Batch.find(batch_id)
@@ -187,7 +185,7 @@ RSpec.describe 'batches API', type: :request do
     end
 
     context 'when the batch was produced change orders status to closing' do
-      before { put "/batches/#{batch_id}", params: attributes_to_closing_batch }
+      before { put "/api/v1/batches/#{batch_id}", params: attributes_to_closing_batch }
 
       it 'updates the record' do
         updated_batch = Batch.find(batch_id)
@@ -204,7 +202,7 @@ RSpec.describe 'batches API', type: :request do
 
     context 'when part of the batch was closed by a delivery service change orders status to sent' do
       before { 
-        put "/batches/#{batch_id}", 
+        put "/api/v1/batches/#{batch_id}", 
         params: attributes_to_close_part_of_a_batch_for_delivery_service 
       }
 
@@ -224,5 +222,4 @@ RSpec.describe 'batches API', type: :request do
     end
   end
 
- 
 end

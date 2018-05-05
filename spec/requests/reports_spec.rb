@@ -11,13 +11,10 @@ RSpec.describe 'Reports API' do
 	let(:order_id) { orders.first.id }
 	let(:client_name) { orders.first.client_name }
 	let(:purchase_channel) { batch.purchase_channel}
-	# let(:order_status) { orders.first.status}
-	# let(:limit) { 4 }
-	# let(:offset) { 2 }
 
-	# Test suite for GET /reports/
-	describe 'GET /reports/' do
-	  before { get "/reports/" }
+	# Test suite for GET /api/v1/reports/
+	describe 'GET /api/v1/reports/' do
+	  before { get "/api/v1/reports/" }
 
 	  context 'when reports exists' do
 	    it 'returns status code 200' do
@@ -32,9 +29,9 @@ RSpec.describe 'Reports API' do
 	  end
 	end
 		
-	# Test suite for GET /reports by purchase_channel
-	describe 'GET /reports by purchase_channel' do
-		before { get "/reports/", params: {purchase_channel: purchase_channel} }
+	# Test suite for GET /api/v1/reports by purchase_channel
+	describe 'GET /api/v1/reports by purchase_channel' do
+		before { get "/api/v1/reports/", params: {purchase_channel: purchase_channel} }
 
 		context 'when orders exists for the purchase_channel' do
 	  		it 'returns status code 200' do

@@ -15,9 +15,9 @@ RSpec.describe 'Orders API' do
 	let(:order_limit) { 4 }
 	let(:order_offset) { 2 }
 
-	# Test suite for GET /orders/:id
-	describe 'GET /orders/:id' do
-	  before { get "/orders/#{order_id}" }
+	# Test suite for GET /api/v1/orders/:id
+	describe 'GET /api/v1/orders/:id' do
+	  before { get "/api/v1/orders/#{order_id}" }
 
 	  context 'when order exists' do
 	    it 'returns status code 200' do
@@ -42,9 +42,9 @@ RSpec.describe 'Orders API' do
 	  end
 	end
 	
-	# Test suite for GET orders by batch
-	describe 'GET /batches/:batch_id/orders' do
-		before { get "/batches/#{batch_id}/orders" }
+	# Test suite for GET /api/v1/batches/:batch_id/orders by batch
+	describe 'GET /api/v1/batches/:batch_id/orders' do
+		before { get "/api/v1/batches/#{batch_id}/orders" }
 
 		context 'when batch exists' do
 	  		it 'returns status code 200' do
@@ -69,9 +69,9 @@ RSpec.describe 'Orders API' do
 		end
 	end
 
-	# Test suite for GET /orders/ by client_name
-	describe 'GET /orders/ by client_name' do
-	  	before { get "/orders/", params: {client_name: order_client_name } }
+	# Test suite for GET /api/v1/orders/ by client_name
+	describe 'GET /api/v1/orders/ by client_name' do
+	  	before { get "/api/v1/orders/", params: {client_name: order_client_name } }
 
 	  	context 'when the record exists' do
 	    	it 'returns the orders' do
@@ -96,9 +96,9 @@ RSpec.describe 'Orders API' do
 	  	end
 	end
 
-	# Test suite for GET /orders/ by an offset and limit
-	describe 'GET /orders/ by an offset and limit' do
-	  	before { get "/orders/", params: {offset: order_offset, limit: order_limit } }
+	# Test suite for GET /api/v1/orders/ by an offset and limit
+	describe 'GET /api/v1/orders/ by an offset and limit' do
+	  	before { get "/api/v1/orders/", params: {offset: order_offset, limit: order_limit } }
 
 	  	context 'when the record exists and is in range' do
 	    	it 'returns the orders' do
@@ -124,9 +124,9 @@ RSpec.describe 'Orders API' do
 	  	end
 	end
 
-	# Test suite for GET /orders/ by purchase_channel and status
-	describe 'GET /orders/ by purchase_channel and status' do
-	  	before { get "/orders/", params: {purchase_channel: order_purchase_channel, status: order_status } }
+	# Test suite for GET /api/v1/orders/ by purchase_channel and status
+	describe 'GET /api/v1/orders/ by purchase_channel and status' do
+	  	before { get "/api/v1/orders/", params: {purchase_channel: order_purchase_channel, status: order_status } }
 
 	  	context 'when the record exists' do
 	    	it 'returns the orders' do
@@ -153,8 +153,8 @@ RSpec.describe 'Orders API' do
 	  	end
 	end
 
-	# Test suite for POST /orders
-  	describe 'POST /orders' do
+	# Test suite for POST /api/v1/orders
+  	describe 'POST /api/v1/orders' do
     	let(:valid_attributes) { 
     		{ 
 	    		reference: 'BR102030',
@@ -174,7 +174,7 @@ RSpec.describe 'Orders API' do
     	
 
 		context 'when request attributes are valid' do
-	      before { post "/orders", params: valid_attributes }
+	      before { post "/api/v1/orders", params: valid_attributes }
 
 	      it 'returns status code 201' do
 	        expect(response).to have_http_status(201)
@@ -188,7 +188,7 @@ RSpec.describe 'Orders API' do
 			non_nullable_attributes.each do |attribute|
 
 		      context 'have an attribute non nullable missing' do
-					before{ post "/orders", params: valid_attributes.except(attribute.intern) }
+					before{ post "/api/v1/orders", params: valid_attributes.except(attribute.intern) }
 		      	it 'returns a failure message' do
 		      		expect(response.body).to match("#{attribute.capitalize.gsub("_"," ")} can't be blank")
 		      	end
@@ -200,11 +200,11 @@ RSpec.describe 'Orders API' do
 		end
   	end
 
-  	# Test suite for PUT /orders/:id
-  	describe 'PUT /orders/:id' do
+  	# Test suite for PUT /api/v1/orders/:id
+  	describe 'PUT /api/v1/orders/:id' do
     	let(:valid_attributes) { { client_name: 'Renan' } }
     	context 'when the record exists' do
-	      	before { put "/orders/#{order_id}", params: valid_attributes }
+	      	before { put "/api/v1/orders/#{order_id}", params: valid_attributes }
 
 	      	it 'updates the record' do
 	      		updated_order = Order.find(order_id)

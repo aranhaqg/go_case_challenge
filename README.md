@@ -1,4 +1,4 @@
-# GoCase API [![Build Status](https://travis-ci.org/aranhaqg/go_case_challenge.svg?branch=master)](https://travis-ci.org/aranhaqg/go_case_challenge)
+# Receive Purchase Orders API [![Build Status](https://travis-ci.org/aranhaqg/go_case_challenge.svg?branch=master)](https://travis-ci.org/aranhaqg/go_case_challenge)
 
 Rails REST API to receive Purchase Orders, group them on Batches, follow the Orders in the production pipeline until the dispatch and generate some simple financial reports.
 Available at https://limitless-dusk-21363.herokuapp.com/.

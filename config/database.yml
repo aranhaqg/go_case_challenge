@@ -13,9 +13,9 @@ default: &default
 development:
   <<: *default
   host: localhost
-  database: go_case_db
-  username: go_case
-  password: go_case@2018
+  database: purchase_orders_db_dev
+  username: postgres
+  password: postgres
 
 
 # Warning: The database defined as "test" will be erased and
@@ -23,12 +23,12 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: go_case_db_test
-  username: go_case
-  password: go_case@2018
+  database: purchase_orders_db_test
+  username: aranha
+  password: aranha@2018
   host: localhost
 
 
 production:
   <<: *default
-  database: go_case_db
+  database: purchase_orders_db
